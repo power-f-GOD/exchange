@@ -1,0 +1,16 @@
+.SVGIcon {
+  display: grid;
+  place-items: center;
+  height: 1em;
+  width: 1em;
+  max-width: 100%;
+  max-height: 100%;
+  opacity: 0.5;
+  color: #00004c;
+
+  svg {
+    height: 100%;
+    width: 100%;
+    color: currentColor;
+  }
+}

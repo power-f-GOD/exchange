@@ -1,0 +1,44 @@
+.IconButton {
+  border: 0.0625em solid transparent;
+  display: inline-grid;
+  background: transparent;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 0.75em;
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.125em rgba(0, 0, 0, 0.1);
+  }
+
+  &.variant- {
+    &outlined {
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &.size- {
+    &small {
+      font-size: 1em;
+    }
+
+    &medium {
+      font-size: 1.25em;
+    }
+
+    &large {
+      font-size: 1.5em;
+    }
+  }
+
+  .SVGIcon {
+    font-size: 0.75em;
+  }
+}

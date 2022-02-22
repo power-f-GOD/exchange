@@ -1,45 +1,19 @@
 <script lang="ts">
-	import Header from '$lib/header/Header.svelte';
-	import '../app.css';
+  import '/src/app.scss';
 </script>
 
-<Header />
-
-<main>
-	<slot />
+<main class="bg-white grid place-items-center">
+  <slot />
 </main>
 
-<footer>
-	<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-</footer>
-
 <style>
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 1024px;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 40px;
-	}
-
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 40px 0;
-		}
-	}
+  main {
+    width: 78%;
+    max-width: 70em;
+    height: 71.5%;
+    max-height: 45.8em;
+    box-shadow: 0 6.25em 5em rgba(157, 157, 174, 0.07), 0 2.6em 2em rgba(157, 157, 174, 0.05),
+      0 1.375em 1.5em rgba(157, 157, 174, 0.04), 0 1em 0.625em rgba(157, 157, 174, 0.04),
+      0 0.375em 0.375em rgba(157, 157, 174, 0.03), 0 0.125em 0.125em rgba(157, 157, 174, 0.02);
+  }
 </style>
