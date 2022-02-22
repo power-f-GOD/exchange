@@ -3,13 +3,13 @@
 // See https://kit.svelte.dev/docs/typescript
 // for information about these interfaces
 declare namespace App {
-	interface Locals {
-		userid: string;
-	}
+  interface Locals {
+    userid: string;
+  }
 
-	interface Platform {}
+  type Platform = Record<string, any>;
 
-	interface Session {}
+  type Session = Record<string, any>;
 
-	interface Stuff {}
+  type Stuff = Record<string, any>;
 }

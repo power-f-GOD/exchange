@@ -2,9 +2,9 @@
   import type { SVGIconProps } from 'src/types';
   import Text from './Text.svelte';
 
-  export let name: string = '';
+  export let name = '';
   export let size: string | number = '';
-  export let color: string = '';
+  export let color = '';
 
   $: _size = +size ? `${size}px` : size;
   $: finalStyle = `

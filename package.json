@@ -8,8 +8,9 @@
     "preview": "svelte-kit preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. . && eslint --ignore-path .gitignore .",
+    "lint": "prettier '(src/**/*.{svelte,ts,js,html}|*.{ts,js})' --write && eslint --ignore-path .gitignore .",
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. .",
+    "postinstall": "husky install",
     "stage": "git checkout dev && git pull origin staging && git checkout staging && git pull origin staging && git merge dev && git push && git checkout dev && git pull origin dev && git merge staging && git push",
     "deploy": "git checkout staging && git pull origin main && git checkout main && git pull origin main && git merge staging && git push && git checkout staging && git pull origin staging && git merge main && git push && git checkout dev"
   },
@@ -22,6 +23,7 @@
     "autoprefixer": "^10.4.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-svelte3": "^3.2.1",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
@@ -37,7 +39,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
     "cookie": "^0.4.1",
     "socket.io-client": "^4.4.1"
@@ -48,7 +49,7 @@
     }
   },
   "lint-staged": {
-    "(src/**/*.{svelte,ts,js}|*.{ts,js})": [
+    "(src/**/*.{svelte,ts,js}|*.{ts,js,!prettierrc})": [
       "prettier --write",
       "eslint --fix"
     ]

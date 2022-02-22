@@ -2,13 +2,13 @@
   import type { StackProps } from 'src/types';
 
   let _as = 'div';
-  export let gap: string = '';
-  export let columnGap: string = '';
-  export let rowGap: string = '';
-  export let columns: string = '';
-  export let rows: string = '';
-  export let height: string = '';
-  export let width: string = '';
+  export let gap = '';
+  export let columnGap = '';
+  export let rowGap = '';
+  export let columns = '';
+  export let rows = '';
+  export let height = '';
+  export let width = '';
   $: finalClassName = `Stack ${$$restProps.class || ''}`.trim();
   $: finalStyle = `
     ${gap ? `gap:${gap};` : ''}
