@@ -17,17 +17,17 @@
   $: finalClassName = `Stack ${$$restProps.class || ''}`.trim();
   $: finalStyle = `
     ${gap ? `gap:${gap};` : ''}
-    ${columnGap ? `columnGap:${columnGap};` : ''}
-    ${rowGap ? `rowGap:${rowGap};` : ''}
-    ${columns ? `gridTemplateColumns:${columns};` : ''}
-    ${rows ? `gridTemplateRows:${rows};` : ''}
+    ${columnGap ? `column-gap:${columnGap};` : ''}
+    ${rowGap ? `row-gap:${rowGap};` : ''}
+    ${columns ? `grid-template-columns:${columns};` : ''}
+    ${rows ? `grid-template-rows:${rows};` : ''}
     ${height ? `height:${height};` : ''}
     ${width ? `width:${width};` : ''}
     ${$$restProps.style || ''}
   `
     .trim()
     .replace(/\s+/g, ' ');
-  $: style = finalStyle.length ? { style: finalStyle } : {}; // doing this to prevent empty style attribute from being added to element when no (extra) style is defined
+  $: style = finalStyle.length ? { style: finalStyle } : {}; // doing this to prevent empty style attribute from being added to element when no style (prop) is defined
 
   /** props type */
   type $$Props = StackProps;

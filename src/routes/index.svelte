@@ -1,5 +1,6 @@
 <script context="module">
   import { browser, dev } from '$app/env';
+  import Card from '../components/shared/Card.svelte';
 
   // we don't need any JS on this page, though we'll load
   // it in dev so that we get hot module replacement...
@@ -16,6 +17,7 @@
 
 <script lang="ts">
   /** internal deps */
+  import Text from '../components/shared/Text.svelte';
   import Input from '../components/shared/Input.svelte';
   import Stack from '../components/shared/Stack.svelte';
   import SVGIcon from '../components/shared/SVG.Icon.svelte';
@@ -25,7 +27,7 @@
   <title>Exchange</title>
 </svelte:head>
 
-<Stack as="section">
+<Stack as="section" class="grid place-items-center" gap="2em">
   <Input
     placeholder="Search"
     kind="select"
@@ -36,4 +38,18 @@
     ]}>
     <SVGIcon name="search" slot="start-adornment" size="1.25em" />
   </Input>
+
+  <Stack class="sm:flex-row" columnGap="1em" rowGap="2em">
+    <Stack as="section" class="anim__fadeInUp" gap="0.75em">
+      <Card />
+
+      <Text as="small" class="font-bold">USD: $ 42000.479901</Text>
+    </Stack>
+
+    <Stack as="section" gap="0.75em" class="anim__fadeInUp anim__del--025s">
+      <Card />
+
+      <Text as="small" class="font-bold">USD: $ 42000.479901</Text>
+    </Stack>
+  </Stack>
 </Stack>

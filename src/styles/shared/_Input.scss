@@ -38,9 +38,7 @@
     width: 100%;
     border-radius: 0.25em;
     margin: 0 0 0 -1em;
-    box-shadow: 0 6.25em 5em rgba(157, 157, 174, 0.075), 0 2.625em 2em rgba(157, 157, 174, 0.05),
-      0 1.375em 1.5em rgba(157, 157, 174, 0.05), 0 1em 1em 0.625em rgba(157, 157, 174, 0.05),
-      0 0.375em 0.375em rgba(157, 157, 174, 0.05), 0 0.125em 0.125em rgba(157, 157, 174, 0.025);
+    box-shadow: $box-shadow;
 
     button {
       padding: 0.75em 1.5em;
@@ -48,7 +46,6 @@
       position: relative;
       text-align: left;
       overflow: hidden;
-      cursor: pointer;
 
       &:hover,
       &:focus,

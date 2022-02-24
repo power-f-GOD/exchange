@@ -27,12 +27,13 @@ body {
   min-width: 100vw;
   margin: 0;
   background-color: #f7f7fb;
+  color: #00004c;
 }
 
 * {
   color: currentColor;
-  font-family: Montserrat, $fallback-font-family;
-  line-height: 1.4em;
+  font-family: Open Sans, $fallback-font-family;
+  line-height: 1.5em;
 
   &,
   &::before,
@@ -63,6 +64,11 @@ textarea {
 
 label {
   cursor: pointer;
+}
+
+small {
+  font-size: 0.75em;
+  opacity: 0.7;
 }
 
 .before-or-after {

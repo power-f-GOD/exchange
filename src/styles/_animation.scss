@@ -1,0 +1,9 @@
+@include anim__('fadeIn', 'Up', null);
+
+.anim__del--025s {
+  animation-delay: 0.25s !important;
+}
+
+.anim__del--05s {
+  animation-delay: 0.5s !important;
+}

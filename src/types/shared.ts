@@ -53,6 +53,8 @@ export interface StackProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'row
 }
 
 export interface TextProps extends svelteHTML.HTMLProps<HTMLElement> {
+  fontSize?: string;
+  color?: string;
   as?:
     | 'em'
     | 'strong'
