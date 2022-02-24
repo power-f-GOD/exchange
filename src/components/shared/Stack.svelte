@@ -4,6 +4,7 @@
 
   /** props */
   let _as = 'div';
+  let _class: string;
   export let gap = '';
   export let columnGap = '';
   export let rowGap = '';
@@ -11,10 +12,10 @@
   export let rows = '';
   export let height = '';
   export let width = '';
-  export { _as as as };
+  export { _as as as, _class as class };
 
   /** react-ibles */
-  $: finalClassName = `Stack ${$$restProps.class || ''}`.trim();
+  $: finalClassName = `Stack ${_class || ''}`.trim();
   $: finalStyle = `
     ${gap ? `gap:${gap};` : ''}
     ${columnGap ? `column-gap:${columnGap};` : ''}

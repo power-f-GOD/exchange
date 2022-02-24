@@ -1,7 +1,4 @@
 <script lang="ts">
-  /** external deps */
-  import { createEventDispatcher } from 'svelte';
-
   /** internal deps */
   import type { IconButtonProps, SVGIconName } from 'src/types';
   import SVGIcon from './SVG.Icon.svelte';
@@ -11,21 +8,16 @@
   export let size: IconButtonProps['size'];
   export let icon: SVGIconName;
 
-  /** funcs */
-  const dispatch = createEventDispatcher();
-
-  const handleClick = () => {
-    dispatch('click');
-  };
-
   /** props type */
   type $$Props = IconButtonProps;
 </script>
 
 <button
   {...$$restProps}
-  on:click={handleClick}
-  class={`IconButton variant--${variant || 'icon'} size--${size || 'medium'} ${
+  on:click
+  class={`IconButton variant--${variant || 'icon'} size--${
+    size || 'medium'
+  } inline-grid bg-transparent place-items-center w-[2em] h-[2em] rounded-[0.75em] relative overflow-hidden ${
     $$restProps.class || ''
   }`.trim()}>
   <SVGIcon name={icon} />

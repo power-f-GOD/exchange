@@ -1,14 +1,5 @@
 .IconButton {
   border: 0.0625em solid transparent;
-  display: inline-grid;
-  background: transparent;
-  place-items: center;
-  width: 2em;
-  height: 2em;
-  border-radius: 0.75em;
-  position: relative;
-  overflow: hidden;
-  transition: 0.3s;
 
   &:hover {
     background: rgba(0, 0, 0, 0.05);

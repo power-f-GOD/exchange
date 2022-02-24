@@ -13,8 +13,8 @@
     width: 100%;
 
     @media screen and (min-width: 768px) {
-      width: 70em; // 78%;
-      max-width: 78%; // 70em;
+      width: 70em;
+      max-width: 78%;
       height: 71.5%;
       max-height: 45.8em;
       box-shadow: 0 6.25em 5em rgba(157, 157, 174, 0.07), 0 2.6em 2em rgba(157, 157, 174, 0.05),
