@@ -1,0 +1,29 @@
+@mixin before-or-after(
+  $bg: $theme-primary,
+  $w: 100%,
+  $h: 100%,
+  $br: inherit,
+  $tr: 0.3s,
+  $t: 0,
+  $l: 0,
+  $r: 0,
+  $b: 0,
+  $o: inherit,
+  $zi: -1,
+  $bs: none
+) {
+  position: absolute;
+  content: ' ';
+  width: $w;
+  height: $h;
+  top: $t;
+  left: $l;
+  right: $r;
+  bottom: $b;
+  z-index: $zi;
+  background: $bg;
+  border-radius: $br;
+  box-shadow: $bs;
+  opacity: $o;
+  transition: $tr;
+}

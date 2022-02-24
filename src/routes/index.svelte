@@ -15,7 +15,7 @@
 </script>
 
 <script lang="ts">
-  import IconButton from '../components/shared/IconButton.svelte';
+  /** internal deps */
   import Input from '../components/shared/Input.svelte';
   import Stack from '../components/shared/Stack.svelte';
   import SVGIcon from '../components/shared/SVG.Icon.svelte';
@@ -26,8 +26,14 @@
 </svelte:head>
 
 <Stack as="section">
-  <Input placeholder="">
+  <Input
+    placeholder="Search"
+    kind="select"
+    selectOptions={[
+      { text: 'Option A', value: 'a' },
+      { text: 'Option B', value: 'b' },
+      { text: 'Option C', value: 'c' }
+    ]}>
     <SVGIcon name="search" slot="start-adornment" size="1.25em" />
-    <IconButton icon="caret" slot="end-adornment" size="small" />
   </Input>
 </Stack>

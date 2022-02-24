@@ -1,6 +1,8 @@
 <script lang="ts">
+  /** internal deps */
   import type { StackProps } from 'src/types';
 
+  /** props */
   let _as = 'div';
   export let gap = '';
   export let columnGap = '';
@@ -9,6 +11,9 @@
   export let rows = '';
   export let height = '';
   export let width = '';
+  export { _as as as };
+
+  /** react-ibles */
   $: finalClassName = `Stack ${$$restProps.class || ''}`.trim();
   $: finalStyle = `
     ${gap ? `gap:${gap};` : ''}
@@ -24,8 +29,7 @@
     .replace(/\s+/g, ' ');
   $: style = finalStyle.length ? { style: finalStyle } : {}; // doing this to prevent empty style attribute from being added to element when no (extra) style is defined
 
-  export { _as as as };
-
+  /** props type */
   type $$Props = StackProps;
 </script>
 

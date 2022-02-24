@@ -1,6 +1,13 @@
 export type InputProps = svelteHTML.HTMLProps<HTMLInputElement> & {
+  kind: 'regular' | 'select';
   containerProps?: Omit<svelte.JSX.HTMLAttributes<HTMLSpanElement>, 'height' | 'width'> &
     StackProps;
+  selectOptions?: {
+    text: string;
+    value: string | number | boolean;
+    icon?: SVGIconName;
+    action?(): void;
+  }[];
 };
 
 export type IconButtonProps = Omit<svelteHTML.HTMLProps<HTMLButtonElement>, 'size'> & {

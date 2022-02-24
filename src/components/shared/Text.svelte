@@ -1,11 +1,15 @@
 <script lang="ts">
+  /** internal deps */
   import type { TextProps } from 'src/types';
 
+  /** props */
   let _as = 'span';
-  $: finalClassName = `Text ${$$restProps.class || ''}`.trim();
-
   export { _as as as };
 
+  /** react-ibles */
+  $: finalClassName = `Text ${$$restProps.class || ''}`.trim();
+
+  /** props type */
   type $$Props = TextProps;
 </script>
 

@@ -2,6 +2,8 @@
   background: rgb(247, 247, 251);
   height: 3em;
   padding: 0 0.5em 0 1em;
+  border-radius: 0.25em;
+  position: relative;
   flex-direction: row;
   align-items: center;
   transition: 0.3s;
@@ -12,7 +14,7 @@
 
   &:focus-within {
     background: rgb(241, 241, 245);
-    box-shadow: 0 0 0 0.125em rgb(227, 227, 231);
+    box-shadow: 0 0 0 0.125em #001dc6;
   }
 
   label {
@@ -23,6 +25,65 @@
 
   input {
     height: 100%;
+    width: 100%;
     background: transparent;
+  }
+
+  ul {
+    position: absolute;
+    z-index: 10001;
+    padding: 0.75em 0;
+    top: calc(100% + 0.25em);
+    background: white;
+    width: 100%;
+    border-radius: 0.25em;
+    margin: 0 0 0 -1em;
+    box-shadow: 0 6.25em 5em rgba(157, 157, 174, 0.075), 0 2.625em 2em rgba(157, 157, 174, 0.05),
+      0 1.375em 1.5em rgba(157, 157, 174, 0.05), 0 1em 1em 0.625em rgba(157, 157, 174, 0.05),
+      0 0.375em 0.375em rgba(157, 157, 174, 0.05), 0 0.125em 0.125em rgba(157, 157, 174, 0.025);
+
+    button {
+      padding: 0.75em 1.5em;
+      width: 100%;
+      position: relative;
+      text-align: left;
+      overflow: hidden;
+      cursor: pointer;
+
+      &:hover,
+      &:focus,
+      &:focus-within {
+        &::before {
+          transform: scale(1.2, 1) translateY(-50%);
+          opacity: 1 !important;
+        }
+      }
+
+      &:last-child {
+        &::before {
+          opacity: 0;
+        }
+      }
+
+      &::before {
+        @extend .before-or-after;
+        z-index: 0;
+        background: rgba(0, 29, 198, 0.1);
+        left: 1.5em;
+        width: calc(100% - 3em);
+        top: 50%;
+        transform: scale(1, 0.025);
+      }
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.075);
+    width: 100%;
+    height: 100%;
   }
 }

@@ -1,11 +1,14 @@
 <script lang="ts">
+  /** internal deps */
   import type { SVGIconProps } from 'src/types';
   import Text from './Text.svelte';
 
+  /** props */
   export let name = '';
   export let size: string | number = '';
   export let color = '';
 
+  /** react-ibles */
   $: _size = +size ? `${size}px` : size;
   $: finalStyle = `
     ${size ? `height: ${_size};` : ''}
@@ -15,6 +18,7 @@
     .replace(/\s+/g, ' ');
   $: style = finalStyle.length ? { style: finalStyle } : {}; // doing this to prevent empty style attribute from being added to element when no (extra) style is defined
 
+  /** props type */
   type $$Props = SVGIconProps;
 </script>
 
