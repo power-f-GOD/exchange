@@ -4,7 +4,7 @@
   import SVGIcon from './SVGIcon.svelte';
 
   /** props */
-  export let variant: IconButtonProps['variant'];
+  export let variant: IconButtonProps['variant'] = 'icon';
   export let size: IconButtonProps['size'];
   export let icon: SVGIconName;
   export let iconProps: Omit<SVGIconProps, 'name'>;

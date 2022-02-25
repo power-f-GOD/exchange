@@ -6,6 +6,8 @@
   import { scaleLinear } from 'd3-scale';
 
   /** props */
+  export let width = 240;
+  export let height = 55;
   export let points = [
     { x: 1979, y: 7.19 },
     { x: 1980, y: 7.83 },
@@ -54,8 +56,6 @@
 
   /** vars */
   const yTicks = [0, 2, 4, 6, 8];
-  let width = 240;
-  let height = 55;
 
   /** react-ibles */
   $: minX = points[0].x;
@@ -69,13 +69,20 @@
 </script>
 
 <svg class="w-full h-full overflfow-auto relative">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="white" />
+      <stop offset="0%" stop-color="rgb(38, 226, 156, 0.15)" />
+    </linearGradient>
+  </defs>
   <!-- data -->
-  <path d={area} style={`fill: rgba(38, 226, 156, 0.2);`} />
+  <path d={area} fill="url(#gradient)" />
   <path class="path-line" d={path} style={`stroke: rgba(38, 226, 156);`} />
 </svg>
 
 <style>
   .path-line {
+    /* fill: #26e29c33; */
     fill: none;
     stroke-linejoin: round;
     stroke-linecap: round;

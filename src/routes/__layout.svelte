@@ -1,9 +1,23 @@
 <script lang="ts">
+  /** external deps */
+  import { onDestroy } from 'svelte';
+
   /** internal deps */
   import '/src/app.scss';
+  import { closeSocket, globalSocket, initSocket } from '../socket';
+
+  /** funcs */
+  if (!globalSocket) {
+    initSocket();
+  }
+
+  /** lifecycles */
+  onDestroy(() => {
+    closeSocket();
+  });
 </script>
 
-<main class="bg-white grid rounded place-items-center">
+<main class="bg-white grid rounded place-items-center anim__fadeInUpBig">
   <slot />
 </main>
 

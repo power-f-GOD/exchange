@@ -4,8 +4,8 @@
 
   /** props */
   let _as = 'span';
-  export let fontSize: string;
-  export let color: string;
+  export let fontSize: string = undefined;
+  export let color: string = undefined;
   export { _as as as };
 
   /** react-ibles */

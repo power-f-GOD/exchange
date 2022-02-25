@@ -1,5 +1,8 @@
 @include anim__('fadeIn', null, null);
 @include anim__('fadeIn', 'Up', null);
+@include anim__('fadeIn', 'Down', null);
+
+@include anim__('fadeIn', 'Up', 'Big');
 
 .anim__del--025s {
   animation-delay: 0.25s !important;

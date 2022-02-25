@@ -18,6 +18,7 @@
   /** external deps */
   import { ApolloClient, InMemoryCache } from '@apollo/client/core/index.js';
   import { setClient, query } from 'svelte-apollo';
+  import type { io } from 'socket.io-client';
 
   /** internal deps */
   import { COUNTRIES, type Countries, type Country } from '$lib/graphql';
@@ -26,6 +27,8 @@
   import Stack from '../components/shared/Stack.svelte';
   import SVGIcon from '../components/shared/SVGIcon.svelte';
   import Card from '../components/shared/Card.svelte';
+  import { onMount } from 'svelte';
+  import { globalSocket, initSocket } from '../socket';
 
   /** vars */
   let data;
@@ -33,13 +36,14 @@
   let value = '';
   let isFetchingCountries = false;
   let countriesResult: Country[] = [];
-  const client = new ApolloClient({
+  let socket: ReturnType<typeof io>;
+  const countriesClient = new ApolloClient({
     uri: 'https://graphql.country/graphql',
     cache: new InMemoryCache()
   });
 
   /** funcs */
-  setClient(client);
+  setClient(countriesClient);
 
   const handleOnInput = (e) => {
     clearTimeout(inputTimeout);
@@ -50,6 +54,17 @@
       isFetchingCountries = false;
     }, 500);
   };
+
+  /** lifecycles */
+  onMount(() => {
+    if (!globalSocket) {
+      initSocket().subscribe((instance) => {
+        socket = instance;
+      });
+    } else {
+      socket = $globalSocket;
+    }
+  });
 
   /** react-ibles */
   $: countriesQuery = query<{ countries: Countries }>(COUNTRIES, {
@@ -73,14 +88,14 @@
       value: node.currencies,
       icon: node.flag
     }))}
-    containerProps={{ class: 'w-[30em]' }}
+    containerProps={{ class: 'w-[30em] max-w-[90vw] anim__fadeInUp anim__del--025s' }}
     bind:value
     on:input={handleOnInput}>
     <SVGIcon name="search" slot="start-adornment" size="1.25em" />
   </Input>
 
   <Stack class="sm:flex-row gap-x-[1em] gap-y-[2em]">
-    <Stack as="section" class="anim__fadeInUp" gap="0.75em">
+    <Stack as="section" class="anim__fadeInUp anim__del--05s" gap="0.75em">
       <Card {data} />
 
       <Text as="small" class="font-bold">USD: $ 42000.479901</Text>

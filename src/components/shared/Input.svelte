@@ -82,7 +82,7 @@
         size="small"
         iconProps={{ size: isLoading ? '2em' : undefined, class: isLoading ? 'animate-spin' : '' }}
         disabled={isLoading}
-        class={displayDropdown ? 'rotate-180 ' : ''}
+        class={displayDropdown && selectOptions.length ? 'rotate-180 ' : ''}
         on:click={() => (displayDropdown = true)} />
 
       {#if displayDropdown && selectOptions.length}
@@ -107,7 +107,7 @@
         </ul>
 
         <div
-          class="fixed top-0 left-0 h-full w-full z-[10000] bg-[rgba(0,0,0,0.075)]"
+          class="fixed top-0 left-0 h-full w-full z-[10000] bg-[rgba(0,0,0,0.05)]"
           on:click={() => (displayDropdown = false)}
           transition:fly={{ duration: 300, opacity: 0 }} />
       {/if}
