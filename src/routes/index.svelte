@@ -1,4 +1,4 @@
-<script context="module">
+<script lang="ts" context="module">
   import { browser, dev } from '$app/env';
 
   // we don't need any JS on this page, though we'll load
@@ -15,15 +15,47 @@
 </script>
 
 <script lang="ts">
+  /** external deps */
+  import { ApolloClient, InMemoryCache } from '@apollo/client/core/index.js';
+  import { setClient, query } from 'svelte-apollo';
+
   /** internal deps */
+  import { COUNTRIES, type Countries, type Country } from '$lib/graphql';
   import Text from '../components/shared/Text.svelte';
   import Input from '../components/shared/Input.svelte';
   import Stack from '../components/shared/Stack.svelte';
-  import SVGIcon from '../components/shared/SVG.Icon.svelte';
+  import SVGIcon from '../components/shared/SVGIcon.svelte';
   import Card from '../components/shared/Card.svelte';
 
   /** vars */
   let data;
+  let inputTimeout: any;
+  let value = '';
+  let isFetchingCountries = false;
+  let countriesResult: Country[] = [];
+  const client = new ApolloClient({
+    uri: 'https://graphql.country/graphql',
+    cache: new InMemoryCache()
+  });
+
+  /** funcs */
+  setClient(client);
+
+  const handleOnInput = (e) => {
+    clearTimeout(inputTimeout);
+    value = e.detail.value;
+    inputTimeout = setTimeout(async () => {
+      isFetchingCountries = true;
+      countriesResult = (await countriesQuery.refetch()).data.countries.edges;
+      isFetchingCountries = false;
+    }, 500);
+  };
+
+  /** react-ibles */
+  $: countriesQuery = query<{ countries: Countries }>(COUNTRIES, {
+    variables: { country: value || 'nigeria' }
+  });
+  $: console.log(countriesResult);
 </script>
 
 <svelte:head>
@@ -35,12 +67,15 @@
     placeholder="Search"
     label="Select your country"
     kind="select"
-    selectOptions={[
-      { text: 'Option A', value: 'a' },
-      { text: 'Option B', value: 'b' },
-      { text: 'Option C', value: 'c' }
-    ]}
-    containerProps={{ class: 'w-[30em]' }}>
+    isLoading={isFetchingCountries}
+    selectOptions={countriesResult.map(({ node }) => ({
+      text: `${node.name} (${node.currencies.edges[0].node.code})`,
+      value: node.currencies,
+      icon: node.flag
+    }))}
+    containerProps={{ class: 'w-[30em]' }}
+    bind:value
+    on:input={handleOnInput}>
     <SVGIcon name="search" slot="start-adornment" size="1.25em" />
   </Input>
 

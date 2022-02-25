@@ -1,3 +1,4 @@
+@include anim__('fadeIn', null, null);
 @include anim__('fadeIn', 'Up', null);
 
 .anim__del--025s {

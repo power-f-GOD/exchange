@@ -1,10 +1,10 @@
 <script lang="ts">
   /** internal deps */
-  import type { SVGIconProps } from 'src/types';
+  import type { SVGIconName, SVGIconProps } from 'src/types';
   import Text from './Text.svelte';
 
   /** props */
-  export let name = '';
+  export let name: SVGIconName;
   export let size: string | number = '';
   export let color = '';
 
@@ -63,6 +63,90 @@
           d="M19.5145 20.7218C19.3235 20.7218 19.1315 20.6488 18.9845 20.5028L15.4605 16.9888C15.1675 16.6958 15.1665 16.2208 15.4595 15.9278C15.7515 15.6328 16.2265 15.6348 16.5205 15.9258L20.0445 19.4408C20.3375 19.7338 20.3385 20.2078 20.0455 20.5008C19.8995 20.6488 19.7065 20.7218 19.5145 20.7218"
           fill="#00004C" />
       </g>
+    </svg>
+  {:else if name === 'spinner'}
+    <svg xmlns="http://www.w3.org/2000/svg" fill="#000000" viewBox="0 0 256 256">
+      <rect width="256" height="256" fill="none" />
+      <line
+        x1="128"
+        y1="32"
+        x2="128"
+        y2="64"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
+      <line
+        x1="195.9"
+        y1="60.1"
+        x2="173.3"
+        y2="82.7"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
+      <line
+        x1="224"
+        y1="128"
+        x2="192"
+        y2="128"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
+      <line
+        x1="195.9"
+        y1="195.9"
+        x2="173.3"
+        y2="173.3"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
+      <line
+        x1="128"
+        y1="224"
+        x2="128"
+        y2="192"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
+      <line
+        x1="60.1"
+        y1="195.9"
+        x2="82.7"
+        y2="173.3"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
+      <line
+        x1="32"
+        y1="128"
+        x2="64"
+        y2="128"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
+      <line
+        x1="60.1"
+        y1="60.1"
+        x2="82.7"
+        y2="82.7"
+        fill="none"
+        stroke="#000000"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="16" />
     </svg>
   {:else if name === 'caret'}
     <svg viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">

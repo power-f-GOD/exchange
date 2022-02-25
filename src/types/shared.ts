@@ -2,10 +2,12 @@ export type InputProps = svelteHTML.HTMLProps<HTMLInputElement> & {
   kind: 'regular' | 'select';
   containerProps?: Omit<svelte.JSX.HTMLAttributes<HTMLSpanElement>, 'height' | 'width'> &
     StackProps;
+  isLoading?: boolean;
   selectOptions?: {
     text: string;
-    value: string | number | boolean;
-    icon?: SVGIconName;
+    value: string | number | boolean | Record<string, any>;
+    iconName?: SVGIconName;
+    icon?: string;
     action?(): void;
   }[];
 };
@@ -15,15 +17,16 @@ export type IconButtonProps = Omit<svelteHTML.HTMLProps<HTMLButtonElement>, 'siz
   variant?: 'icon' | 'contained' | 'outlined';
   // color?: 'primary' | 'secondary' | 'tertiary';
   icon: SVGIconName;
+  iconProps: Omit<SVGIconProps, 'name'>;
 };
 
-export interface SVGIconProps {
+export interface SVGIconProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'size'> {
   name: SVGIconName;
   size?: string | number;
   color?: string;
 }
 
-export type SVGIconName = 'search' | 'caret';
+export type SVGIconName = 'search' | 'caret' | 'spinner';
 
 export interface StackProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'rows'> {
   gap?: string;

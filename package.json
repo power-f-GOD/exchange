@@ -12,7 +12,8 @@
     "format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. .",
     "postinstall": "husky install",
     "stage": "git checkout dev && git pull origin staging && git checkout staging && git pull origin staging && git merge dev && git push && git checkout dev && git pull origin dev && git merge staging && git push",
-    "deploy": "git checkout staging && git pull origin main && git checkout main && git pull origin main && git merge staging && git push && git checkout staging && git pull origin staging && git merge main && git push && git checkout dev"
+    "deploy": "git checkout staging && git pull origin main && git checkout main && git pull origin main && git merge staging && git push && git checkout staging && git pull origin staging && git merge main && git push && git checkout dev",
+    "stash": "git stash save -m echo `date`"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
@@ -25,6 +26,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-svelte3": "^3.2.1",
+    "graphql": "^16.3.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.4",
     "postcss": "^8.4.6",
@@ -39,10 +41,12 @@
   },
   "type": "module",
   "dependencies": {
+    "@apollo/client": "^3.5.9",
     "@lukeed/uuid": "^2.0.0",
     "cookie": "^0.4.1",
     "d3-scale": "^4.0.2",
-    "socket.io-client": "^4.4.1"
+    "socket.io-client": "^4.4.1",
+    "svelte-apollo": "^0.5.0"
   },
   "husky": {
     "hooks": {

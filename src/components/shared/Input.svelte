@@ -1,31 +1,44 @@
 <script lang="ts">
   /** external deps */
   import { fly } from 'svelte/transition';
+  import { createEventDispatcher } from 'svelte';
 
   /** internal deps */
   import type { InputProps } from 'src/types';
   import IconButton from './IconButton.svelte';
   import Stack from './Stack.svelte';
   import Text from './Text.svelte';
+  import SVGIcon from './SVGIcon.svelte';
 
   /** props */
   export let containerProps: InputProps['containerProps'] = {};
   export let kind: InputProps['kind'] = 'regular';
   export let selectOptions: InputProps['selectOptions'] = [];
   export let label: string;
+  export let isLoading = false;
 
   /** vars */
   let displayDropdown = false;
   let selectedOption: typeof selectOptions[0];
+  let value = '';
 
   /** funcs */
-  const handleOnInput = () => {
+  const dispatch = createEventDispatcher();
+
+  const handleOnInput = (e) => {
+    dispatch('input', { target: e.target, value: e.target.value });
+    value = e.target.value.replace(/\(.+\)?/g, '');
     selectedOption = undefined;
+    displayDropdown = true;
   };
 
   const handleOptionClick = (option: typeof selectOptions[0]) => () => {
     selectedOption = option;
     displayDropdown = false;
+
+    if (option.action) {
+      option.action();
+    }
   };
 
   /** react-ibles */
@@ -38,9 +51,8 @@
 
 <Stack
   {...containerProps}
-  class={`Input relative ${containerProps.class || ''}`.trim()}
-  as="span"
-  gap="0">
+  class={`Input relative gap-0 ${containerProps.class || ''}`.trim()}
+  as="span">
   {#if label}
     <Text as="small" class="mb-1 opacity-40" fontSize="0.875em">{label}</Text>
   {/if}
@@ -54,29 +66,43 @@
         class={`${$$restProps.class || ''} h-full w-full bg-transparent`.trim()}
         value={selectedOption?.text || ''}
         on:input={handleOnInput}
-        on:focus={() => (displayDropdown = true)} />
+        on:focus={() => {
+          if (selectOptions.length) {
+            displayDropdown = true;
+          }
+        }} />
 
       <slot name="end-adornment" />
     </Stack>
 
     {#if kind === 'select'}
       <IconButton
-        icon="caret"
+        icon={isLoading ? 'spinner' : 'caret'}
         slot="end-adornment"
         size="small"
-        class={displayDropdown ? 'rotate-180' : ''}
+        iconProps={{ size: isLoading ? '2em' : undefined, class: isLoading ? 'animate-spin' : '' }}
+        disabled={isLoading}
+        class={displayDropdown ? 'rotate-180 ' : ''}
         on:click={() => (displayDropdown = true)} />
 
-      {#if displayDropdown}
+      {#if displayDropdown && selectOptions.length}
         <ul
-          class="Stack w-full bg-white absolute rounded z-[10001] py-2 px-0 top-[calc(100%+0.25em)] m-0 -ml-4"
+          class="Stack w-full bg-white absolute rounded z-[10001] py-2 px-0 top-[calc(100%+0.25em)] overflow-auto max-h-[50vh] m-0 -ml-4"
           transition:fly={{ y: 24, duration: 300 }}>
           {#each selectOptions as option (option.text)}
             <button role="listitem" on:click={handleOptionClick(option)}>
-              {option.text}
+              {#if option.icon}
+                <Stack as="span">
+                  <img src={option.icon} alt="{option.text} flag" />
+                </Stack>
+              {:else if option.iconName}
+                <SVGIcon name={option.iconName} />
+              {/if}
+
+              <Text as="span">
+                {@html `${option.text.replace(new RegExp(value, 'i'), `<b>${value}</b>`)}`}
+              </Text>
             </button>
-          {:else}
-            <button role="listitem">- No options -</button>
           {/each}
         </ul>
 
