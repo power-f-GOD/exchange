@@ -4,7 +4,7 @@
   import { createEventDispatcher } from 'svelte';
 
   /** internal deps */
-  import type { InputProps } from 'src/types';
+  import type { InputProps, InputSelectOption } from 'src/types';
   import IconButton from './IconButton.svelte';
   import Stack from './Stack.svelte';
   import Text from './Text.svelte';
@@ -13,26 +13,29 @@
   /** props */
   export let containerProps: InputProps['containerProps'] = {};
   export let kind: InputProps['kind'] = 'regular';
-  export let selectOptions: InputProps['selectOptions'] = [];
+  export let selectOptions: InputProps['selectOptions'] = undefined;
   export let label: string;
   export let isLoading = false;
 
   /** vars */
   let displayDropdown = false;
-  let selectedOption: typeof selectOptions[0];
+  let selectedOption: InputSelectOption | undefined;
   let value = '';
 
   /** funcs */
   const dispatch = createEventDispatcher();
 
-  const handleOnInput = (e) => {
-    dispatch('input', { target: e.target, value: e.target.value });
-    value = e.target.value.replace(/\(.+\)?/g, '');
+  // eslint-disable-next-line
+  const handleOnInput: svelte.JSX.FormEventHandler<HTMLInputElement> = (e) => {
+    const target = e.target as HTMLInputElement;
+
+    dispatch('input', { target, value: target.value });
+    value = target.value.replace(/\(.+\)?/g, '');
     selectedOption = undefined;
     displayDropdown = true;
   };
 
-  const handleOptionClick = (option: typeof selectOptions[0]) => () => {
+  const handleOptionClick = (option: InputSelectOption) => () => {
     selectedOption = option;
     displayDropdown = false;
 
@@ -51,7 +54,7 @@
 
 <Stack
   {...containerProps}
-  class={`Input relative gap-0 ${containerProps.class || ''}`.trim()}
+  class={`Input relative gap-0 ${containerProps?.class || ''}`.trim()}
   as="span">
   {#if label}
     <Text as="small" class="mb-1 opacity-40" fontSize="0.875em">{label}</Text>
@@ -67,7 +70,7 @@
         value={selectedOption?.text || ''}
         on:input={handleOnInput}
         on:focus={() => {
-          if (selectOptions.length) {
+          if (selectOptions?.length) {
             displayDropdown = true;
           }
         }} />
@@ -82,10 +85,10 @@
         size="small"
         iconProps={{ size: isLoading ? '2em' : undefined, class: isLoading ? 'animate-spin' : '' }}
         disabled={isLoading}
-        class={displayDropdown && selectOptions.length ? 'rotate-180 ' : ''}
+        class={displayDropdown && selectOptions?.length ? 'rotate-180 ' : ''}
         on:click={() => (displayDropdown = true)} />
 
-      {#if displayDropdown && selectOptions.length}
+      {#if displayDropdown && selectOptions?.length}
         <ul
           class="Stack w-full bg-white absolute rounded z-[10001] py-2 px-0 top-[calc(100%+0.25em)] overflow-auto max-h-[50vh] m-0 -ml-4"
           transition:fly={{ y: 24, duration: 300 }}>

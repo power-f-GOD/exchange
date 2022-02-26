@@ -20,7 +20,7 @@
   import { onMount } from 'svelte';
 
   /** internal deps */
-  import { countriesQuery, Http } from '$lib';
+  import { countriesQuery } from '$lib';
   import { globalSocket, initSocket } from '../socket';
   import type { Country } from 'src/types';
   import Text from '../components/shared/Text.svelte';

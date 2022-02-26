@@ -7,7 +7,10 @@ module.exports = {
   overrides: [
     {
       files: ['*.svelte'],
-      processor: 'svelte3/svelte3'
+      processor: 'svelte3/svelte3',
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off'
+      }
     },
     // This configuration will apply only to TypeScript files
     {

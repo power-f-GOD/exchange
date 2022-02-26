@@ -1,15 +1,17 @@
+export interface InputSelectOption {
+  text: string;
+  value: string | number | boolean | Record<string, any>;
+  iconName?: SVGIconName;
+  icon?: string;
+  action?(): void;
+}
+
 export type InputProps = svelteHTML.HTMLProps<HTMLInputElement> & {
   kind: 'regular' | 'select';
-  containerProps?: Omit<svelte.JSX.HTMLAttributes<HTMLSpanElement>, 'height' | 'width'> &
+  containerProps?: Omit<svelte.JSX.HTMLAttributes<HTMLSpanElement>, 'height' | 'width' | 'slot'> &
     StackProps;
   isLoading?: boolean;
-  selectOptions?: Array<{
-    text: string;
-    value: string | number | boolean | Record<string, any>;
-    iconName?: SVGIconName;
-    icon?: string;
-    action?(): void;
-  }>;
+  selectOptions?: Array<InputSelectOption>;
 };
 
 export type IconButtonProps = Omit<svelteHTML.HTMLProps<HTMLButtonElement>, 'size'> & {
@@ -20,7 +22,7 @@ export type IconButtonProps = Omit<svelteHTML.HTMLProps<HTMLButtonElement>, 'siz
   iconProps: Omit<SVGIconProps, 'name'>;
 };
 
-export interface SVGIconProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'size'> {
+export interface SVGIconProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'size' | 'slot'> {
   name: SVGIconName;
   size?: string | number;
   color?: string;
@@ -28,7 +30,7 @@ export interface SVGIconProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 's
 
 export type SVGIconName = 'search' | 'caret' | 'spinner';
 
-export interface StackProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'rows'> {
+export interface StackProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'rows' | 'slot'> {
   gap?: string;
   columnGap?: string;
   rowGap?: string;
