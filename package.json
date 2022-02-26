@@ -43,6 +43,7 @@
   "dependencies": {
     "@apollo/client": "^3.5.9",
     "@lukeed/uuid": "^2.0.0",
+    "axios": "^0.26.0",
     "cookie": "^0.4.1",
     "d3-scale": "^4.0.2",
     "socket.io-client": "^4.4.1",

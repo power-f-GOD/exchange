@@ -3,13 +3,13 @@ export type InputProps = svelteHTML.HTMLProps<HTMLInputElement> & {
   containerProps?: Omit<svelte.JSX.HTMLAttributes<HTMLSpanElement>, 'height' | 'width'> &
     StackProps;
   isLoading?: boolean;
-  selectOptions?: {
+  selectOptions?: Array<{
     text: string;
     value: string | number | boolean | Record<string, any>;
     iconName?: SVGIconName;
     icon?: string;
     action?(): void;
-  }[];
+  }>;
 };
 
 export type IconButtonProps = Omit<svelteHTML.HTMLProps<HTMLButtonElement>, 'size'> & {
@@ -76,4 +76,4 @@ export interface TextProps extends svelteHTML.HTMLProps<HTMLElement> {
     | 'blockquote';
 }
 
-export type ViewAs = StackProps['as'] & TextProps['as'] & 'br';
+// export type ViewAs = StackProps['as'] & TextProps['as'] & 'br';
