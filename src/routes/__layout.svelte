@@ -3,7 +3,7 @@
   import { onDestroy } from 'svelte';
 
   /** internal deps */
-  import '/src/app.scss';
+  // import '/src/app.scss';
   import { closeSocket, globalSocket, initSocket } from '../socket';
 
   /** funcs */
@@ -17,12 +17,18 @@
   });
 </script>
 
-<main class="bg-white grid rounded place-items-center anim__fadeInUpBig">
+<main class="Layout bg-white grid rounded place-items-center anim__fadeInUpBig">
   <slot />
 </main>
 
-<style lang="scss">
-  main {
+<style lang="scss" global>
+  /* 
+    The global style attribute (above)... A hack (https://github.com/sveltejs/kit/issues/915#issuecomment-1047419419) for FOUC (Flash Of Unstyled Content) in dev mode (not sure if it happens in prod yet/though). 
+    See the issue: https://github.com/sveltejs/kit/issues/915 
+  */
+  @import 'src/app.scss';
+
+  main.Layout {
     height: 100%;
     width: 100%;
 

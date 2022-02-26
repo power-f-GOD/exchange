@@ -16,42 +16,43 @@
 
 <script lang="ts">
   /** external deps */
-  import { ApolloClient, InMemoryCache } from '@apollo/client/core/index.js';
-  import { setClient, query } from 'svelte-apollo';
   import type { io } from 'socket.io-client';
+  import { onMount } from 'svelte';
 
   /** internal deps */
-  import { COUNTRIES, type Countries, type Country } from '$lib/graphql';
+  import { countriesQuery, Http } from '$lib';
+  import { globalSocket, initSocket } from '../socket';
+  import type { Country } from 'src/types';
   import Text from '../components/shared/Text.svelte';
   import Input from '../components/shared/Input.svelte';
   import Stack from '../components/shared/Stack.svelte';
   import SVGIcon from '../components/shared/SVGIcon.svelte';
   import Card from '../components/shared/Card.svelte';
-  import { onMount } from 'svelte';
-  import { globalSocket, initSocket } from '../socket';
 
   /** vars */
-  let data;
+  let data: any;
   let inputTimeout: any;
   let value = '';
   let isFetchingCountries = false;
   let countriesResult: Country[] = [];
   let socket: ReturnType<typeof io>;
-  const countriesClient = new ApolloClient({
-    uri: 'https://graphql.country/graphql',
-    cache: new InMemoryCache()
-  });
 
   /** funcs */
-  setClient(countriesClient);
-
-  const handleOnInput = (e) => {
+  const handleOnInput = (e: any) => {
     clearTimeout(inputTimeout);
     value = e.detail.value;
+
+    if (!value.trim()) {
+      return (countriesResult = []);
+    }
+
     inputTimeout = setTimeout(async () => {
-      isFetchingCountries = true;
-      countriesResult = (await countriesQuery.refetch()).data.countries.edges;
-      isFetchingCountries = false;
+      try {
+        isFetchingCountries = true;
+        countriesResult = await countriesQuery({ country: value || '' });
+      } finally {
+        isFetchingCountries = false;
+      }
     }, 500);
   };
 
@@ -67,9 +68,6 @@
   });
 
   /** react-ibles */
-  $: countriesQuery = query<{ countries: Countries }>(COUNTRIES, {
-    variables: { country: value || 'nigeria' }
-  });
   $: console.log(countriesResult);
 </script>
 

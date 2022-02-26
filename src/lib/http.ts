@@ -6,21 +6,17 @@ export class Http {
   /**
    * @param options Axios request options object. PS. options.requiresAuth implies whether token/authentication will be required for the request
    */
-  static async get<T>(
+  static async get<RequestType>(
     url: string,
     options: Omit<AxiosRequestConfig, 'url' | 'method' | 'data' | 'validateStatus'> & {
       requiresAuth?: boolean;
     }
-  ): Promise<T | ReturnType<Http['error']>> {
-    try {
-      const response: AxiosResponse<T> = await axios(
-        Http.returnRequestConfig<T>('GET', url, undefined, options)
-      );
+  ): Promise<RequestType> {
+    const response: AxiosResponse<RequestType> = await axios(
+      Http.returnRequestConfig<RequestType>('GET', url, undefined, options)
+    );
 
-      return response.data;
-    } catch (e) {
-      return new Http().error(e);
-    }
+    return response.data;
   }
 
   /**
@@ -32,16 +28,12 @@ export class Http {
     options?: Omit<AxiosRequestConfig, 'url' | 'method' | 'data' | 'validateStatus'> & {
       requiresAuth?: boolean;
     }
-  ): Promise<RequestType | ReturnType<Http['error']>> {
-    try {
-      const response: AxiosResponse<RequestType> = await axios(
-        Http.returnRequestConfig<ResponseType>('POST', url, data, options)
-      );
+  ): Promise<RequestType> {
+    const response: AxiosResponse<RequestType> = await axios(
+      Http.returnRequestConfig<ResponseType>('POST', url, data, options)
+    );
 
-      return response.data;
-    } catch (e) {
-      return new Http().error(e);
-    }
+    return response.data;
   }
 
   private static returnRequestConfig<T = any>(
@@ -69,10 +61,10 @@ export class Http {
     };
   }
 
-  private error(e: any) {
-    const message = /network|connection|internet/i.test(e.message)
+  static error(e: any) {
+    const message = /network|connection|internet/i.test(e.message || e)
       ? "Hm.🤔 Something went wrong. Kindly check that you're connected to the internet."
-      : e.message;
+      : e.message || e;
 
     if (process.env.NODE_ENV === 'development') {
       console.error('An error occured: ', e);

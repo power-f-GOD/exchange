@@ -24,9 +24,15 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "allowJs": true,
     "checkJs": true,
+    "importHelpers": true,
+    "strict": true,
+    "noEmit": true,
+    "incremental": true,
+    "noFallthroughCasesInSwitch": true,
+    "strictPropertyInitialization": false,
     "paths": {
       "$lib": ["src/lib"],
       "$lib/*": ["src/lib/*"]
