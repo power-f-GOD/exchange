@@ -16,13 +16,12 @@
 
 <script lang="ts">
   /** external deps */
-  import type { io } from 'socket.io-client';
   import { onMount } from 'svelte';
 
   /** internal deps */
   import { countriesQuery } from '$lib';
-  import { globalSocket, initSocket } from '../socket';
-  import type { Country } from 'src/types';
+  import { initSocket, socketSend } from '../socket';
+  import type { Country } from '../types';
   import Text from '../components/shared/Text.svelte';
   import Input from '../components/shared/Input.svelte';
   import Stack from '../components/shared/Stack.svelte';
@@ -35,7 +34,6 @@
   let value = '';
   let isFetchingCountries = false;
   let countriesResult: Country[] = [];
-  let socket: ReturnType<typeof io>;
 
   /** funcs */
   const handleOnInput = (e: any) => {
@@ -56,19 +54,22 @@
     }, 500);
   };
 
-  /** lifecycles */
-  onMount(() => {
-    if (!globalSocket) {
-      initSocket().subscribe((instance) => {
-        socket = instance;
-      });
-    } else {
-      socket = $globalSocket;
-    }
-  });
-
   /** react-ibles */
   $: console.log(countriesResult);
+
+  /** lifecycles */
+  onMount(() => {
+    initSocket().subscribe(() => {
+      socketSend(
+        {
+          method: 'SUBSCRIBE',
+          params: ['btcusdt@ticker', 'ethusdt@ticker', 'adausdt@ticker'],
+          id: 1
+        },
+        true
+      );
+    });
+  });
 </script>
 
 <svelte:head>

@@ -43,8 +43,7 @@
   "type": "module",
   "dependencies": {
     "axios": "^0.26.0",
-    "d3-scale": "^4.0.2",
-    "socket.io-client": "^4.4.1"
+    "d3-scale": "^4.0.2"
   },
   "husky": {
     "hooks": {

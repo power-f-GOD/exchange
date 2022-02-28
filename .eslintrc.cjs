@@ -9,7 +9,8 @@ module.exports = {
       files: ['*.svelte'],
       processor: 'svelte3/svelte3',
       rules: {
-        '@typescript-eslint/no-explicit-any': 'off'
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unused-vars': 'warn'
       }
     },
     // This configuration will apply only to TypeScript files

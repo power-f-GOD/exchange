@@ -1,33 +1,37 @@
-import { io } from 'socket.io-client';
 import { writable, type Writable } from 'svelte/store';
-import {
-  SocketEventsEnum,
-  WS_BASE_URL,
-  type SocketResponsePayload,
-  type SocketResponsePayloadBase
-} from './constants';
-import exchangeRouter from './exchange.router';
+import { BINANCE_STREAMS_WS_BASE_URL } from './constants';
+import { ADARouter } from './ada.router';
+import { BTCRouter } from './btc.router';
+import { ETHRouter } from './eth.router';
+import { type StreamMiniResponse, ExchangeSymbolsEnum, type Socket } from '../types';
 
 export * from './constants';
 
-export let globalSocket: Writable<ReturnType<typeof io>>;
+export let globalSocket: Socket;
+export let globalSocketWritable: Writable<Socket>;
 
 export const activateSocketRouters = () => {
-  let socket: ReturnType<typeof io>;
+  if (!globalSocketWritable) return;
 
-  if (!globalSocket) return;
+  globalSocketWritable.subscribe((instance) => {
+    globalSocket = instance;
 
-  globalSocket.subscribe((instance) => {
-    socket = instance;
-
-    if (!socket?.connected) {
+    if (!globalSocket?.OPEN) {
       return;
     }
 
-    socket.onAny((eventName: SocketEventsEnum, payload: SocketResponsePayload) => {
-      switch (eventName) {
-        case SocketEventsEnum.EXCHANGE:
-          exchangeRouter(eventName, payload);
+    globalSocket.addEventListener('message', (event) => {
+      const { data }: StreamMiniResponse = JSON.parse(event.data);
+
+      switch (data?.s) {
+        case ExchangeSymbolsEnum.ADAUSDT:
+          ADARouter(data);
+          break;
+        case ExchangeSymbolsEnum.BTCUSDT:
+          BTCRouter(data);
+          break;
+        case ExchangeSymbolsEnum.ETHUSDT:
+          ETHRouter(data);
           break;
       }
     });
@@ -38,88 +42,82 @@ export const initSocket = () => {
   //close webSocket if initially open to avoid bugs of double responses
   closeSocket();
 
-  let socket: ReturnType<typeof io>;
+  if (!globalThis.WebSocket) return writable(null);
 
-  globalSocket = writable(
-    io(`${WS_BASE_URL}/?token=${'token'}`, {
-      transports: ['websocket', 'polling'] // use WebSocket first, if available
-    })
+  globalSocketWritable = writable(
+    new globalThis.WebSocket(
+      `${BINANCE_STREAMS_WS_BASE_URL}/stream?streams=btcusdt/ethusdt/adausdt`
+    )
   );
 
-  globalSocket.subscribe((instance) => {
-    socket = instance;
+  globalSocketWritable.subscribe((instance) => {
+    globalSocket = instance;
 
-    if (!socket) return;
+    if (!globalSocket) return;
 
-    socket.connect();
-    socket.on('connect', () => {
-      console.trace('Sockets shook hands!');
+    globalSocket.addEventListener('open', () => {
+      console.log('Sockets shook hands and became friends!');
       activateSocketRouters();
     });
-    socket.on('exception', (...args) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('EXCEPTION:', args);
-      }
+    globalSocket.addEventListener('close', () => {
+      console.log('Sockets called it a day!');
     });
-    socket.on('disconnect', () => {
-      console.trace('Sockets called it a day!');
-      closeSocket();
+    globalSocket.addEventListener('error', (e) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('EXCEPTION:', e);
+      }
     });
   });
 
-  return globalSocket;
+  return globalSocketWritable;
 };
 
 export const closeSocket = () => {
-  let socket: ReturnType<typeof io>;
+  if (!globalSocketWritable) return;
 
-  if (!globalSocket) return;
+  globalSocketWritable.subscribe((instance) => {
+    globalSocket = instance;
 
-  globalSocket.subscribe((instance) => {
-    socket = instance;
-
-    if (socket) {
-      socket.offAny();
-
-      if (socket.connected) {
-        socket.close();
-      }
+    if (globalSocket?.OPEN) {
+      globalSocket.close();
     }
 
-    globalSocket.set(null);
+    globalSocketWritable.set(null);
   });
 };
 
-export const socketEmit = <DataType = any>(
-  eventName: SocketEventsEnum,
-  data: Partial<DataType>,
-  payloadBase?: SocketResponsePayloadBase
-) => {
-  let socket: ReturnType<typeof io>;
+let socketSendTimeout: any;
 
-  if (!globalSocket) return;
+export const socketSend = <DataType = any>(data: Partial<DataType>, subscribeOnce?: boolean) => {
+  if (!globalSocket && globalSocketWritable) {
+    globalSocketWritable.subscribe((instance) => {
+      globalSocket = instance;
+    });
+  }
 
-  globalSocket.subscribe((instance) => {
-    socket = instance;
+  if (globalSocket?.readyState !== globalSocket?.OPEN) {
+    clearTimeout(socketSendTimeout);
+    socketSendTimeout = setTimeout(() => {
+      socketSend(data, subscribeOnce);
+    }, 2000);
+    return;
+  }
 
-    if (socket?.connected) {
-      socket.emit(eventName, normalizeSocketPayload(data, payloadBase));
-    } else {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`Error: Could not emit event: '${eventName}': Sockets not connected.`);
-      }
+  if (globalSocket?.OPEN) {
+    globalSocket.send(JSON.stringify(data));
 
-      initSocket();
+    if (subscribeOnce) {
+      clearTimeout(socketSendTimeout);
+      socketSendTimeout = setTimeout(() => {
+        globalSocket?.close();
+        globalSocketWritable.set(null);
+      }, 2000);
     }
-  });
-};
+  } else {
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Error: Could not send data: '${JSON.stringify(data)}': Sockets aren't friends.`);
+    }
 
-export const normalizeSocketPayload = <DataType = any>(
-  data: DataType,
-  payloadBase?: SocketResponsePayloadBase
-) => {
-  return {
-    data,
-    ...(payloadBase || {})
-  };
+    if (!subscribeOnce) initSocket();
+  }
 };

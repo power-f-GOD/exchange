@@ -3,7 +3,6 @@
   import { onDestroy } from 'svelte';
 
   /** internal deps */
-  // import '/src/app.scss';
   import { closeSocket, globalSocket, initSocket } from '../socket';
 
   /** funcs */
@@ -23,8 +22,8 @@
 
 <style lang="scss" global>
   /* 
-    The global style attribute (above)... A hack (https://github.com/sveltejs/kit/issues/915#issuecomment-1047419419) for FOUC (Flash Of Unstyled Content) in dev mode (not sure if it happens in prod yet/though). 
-    See the issue: https://github.com/sveltejs/kit/issues/915 
+    The global style attribute (above)...A hack (https://github.com/sveltejs/kit/issues/915#issuecomment-1047419419) for the FOUC (Flash Of Unstyled Content) in dev mode (not sure if it happens in prod yet/though). 
+    See the issue here: https://github.com/sveltejs/kit/issues/915 
   */
   @import 'src/app.scss';
 
