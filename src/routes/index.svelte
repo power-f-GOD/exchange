@@ -76,7 +76,7 @@
           id: 1
         },
         true,
-        process.env.NODE_ENV === 'production' ? 5000 : 10000
+        process.env.NODE_ENV === 'production' ? 2500 : 5000
       );
     });
   });
@@ -98,7 +98,7 @@
       icon: node.flag,
       action: handleOptionSelect(node.currencies.edges[0].node)
     }))}
-    containerProps={{ class: 'w-[30em] max-w-[90vw] anim__fadeInUp anim__del--025s' }}
+    containerProps={{ class: 'w-[30em] max-w-[90vw] anim__fadeInUp anim__del--05s' }}
     bind:value
     on:input={handleOnInput}>
     <SVGIcon name="search" slot="start-adornment" size="1.25em" />
@@ -109,7 +109,7 @@
       <Stack
         as="section"
         class="anim__fadeInUp"
-        style={`animation-delay: ${(i + 1) * 0.25}s`}
+        style={`animation-delay: ${(i + 2) * 0.25}s`}
         gap="0.75em">
         <Card {data} />
 
