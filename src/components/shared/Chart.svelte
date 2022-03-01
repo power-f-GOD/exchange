@@ -1,92 +1,79 @@
 <!-- 
-  Chart pulled from Svelte's Area Chart sample @ https://svelte.dev/examples/area-chart 
+  Chart sample pulled from Svelte's Area Chart sample @ https://svelte.dev/examples/area-chart 
 -->
-<script>
-  /** external deps */
-  import { scaleLinear } from 'd3-scale';
+<script lang="ts">
+  /** internal deps */
+  import { AN_HOUR_IN_MS, A_DAY_IN_MS } from '../../constants';
+  import type { StreamResponseData } from '../../types';
 
   /** props */
   export let width = 240;
   export let height = 55;
-  export let points = [
-    { x: 1979, y: 7.19 },
-    { x: 1980, y: 7.83 },
-    { x: 1981, y: 7.24 },
-    { x: 1982, y: 7.44 },
-    { x: 1983, y: 7.51 },
-    { x: 1984, y: 7.1 },
-    { x: 1985, y: 6.91 },
-    { x: 1986, y: 7.53 },
-    { x: 1987, y: 7.47 },
-    { x: 1988, y: 7.48 },
-    { x: 1989, y: 7.03 },
-    { x: 1990, y: 6.23 },
-    { x: 1991, y: 6.54 },
-    { x: 1992, y: 7.54 },
-    { x: 1993, y: 6.5 },
-    { x: 1994, y: 7.18 },
-    { x: 1995, y: 6.12 },
-    { x: 1996, y: 7.87 },
-    { x: 1997, y: 6.73 },
-    { x: 1998, y: 6.55 },
-    { x: 1999, y: 6.23 },
-    { x: 2000, y: 6.31 },
-    { x: 2001, y: 6.74 },
-    { x: 2002, y: 5.95 },
-    { x: 2003, y: 6.13 },
-    { x: 2004, y: 6.04 },
-    { x: 2005, y: 5.56 },
-    { x: 2006, y: 5.91 },
-    { x: 2007, y: 4.29 },
-    { x: 2008, y: 4.72 },
-    { x: 2009, y: 5.38 },
-    { x: 2010, y: 4.92 },
-    { x: 2011, y: 4.61 },
-    { x: 2012, y: 3.62 },
-    { x: 2013, y: 5.35 },
-    { x: 2014, y: 5.28 },
-    { x: 2015, y: 4.63 },
-    { x: 2016, y: 4.72 },
-    { x: 2017, y: 4.82 },
-    { x: 2018, y: 4.79 },
-    { x: 2019, y: 4.36 },
-    { x: 2020, y: 4 },
-    { x: 2021, y: 4.92 }
-  ];
+  export let data: Partial<StreamResponseData>[] = [];
 
   /** vars */
-  const yTicks = [0, 2, 4, 6, 8];
+  const samplePoints: Partial<StreamResponseData>[] = [
+    { h: '20', l: '0', a: '7', o: '10', O: 0, C: 86400000, E: 86400000 },
+    { h: '20', l: '0', a: '2', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 2 },
+    { h: '20', l: '0', a: '4', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 4 },
+    { h: '20', l: '0', a: '8', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 6 },
+    { h: '20', l: '0', a: '6', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 8 },
+    { h: '20', l: '0', a: '19', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 10 },
+    { h: '20', l: '0', a: '7', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 12 },
+    { h: '20', l: '0', a: '11', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 14 },
+    { h: '20', l: '0', a: '9', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 16 },
+    { h: '20', l: '0', a: '19', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 18 },
+    { h: '20', l: '0', a: '13', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 20 },
+    { h: '20', l: '10', a: '20', o: '10', O: 0, C: 86400000, E: 86400000 + AN_HOUR_IN_MS * 24 }
+  ];
 
   /** react-ibles */
-  $: minX = points[0].x;
-  $: maxX = points[points.length - 1].x;
-  $: xScale = scaleLinear().domain([minX, maxX]).range([0, width]);
-  $: yScale = scaleLinear()
-    .domain([Math.min.apply(null, yTicks), Math.max.apply(null, yTicks)])
-    .range([height, 0]);
-  $: path = `M${points.map((p) => `${xScale(p.x)},${yScale(p.y)}`).join('L')}`;
-  $: area = `${path}L${xScale(maxX)},${yScale(0)}L${xScale(minX)},${yScale(0)}Z`;
+  $: points = data.length ? data : samplePoints;
+  $: firstTick = points[0];
+  $: lastTick = points?.slice(-1)[0];
+  $: maxX = +firstTick.C! / AN_HOUR_IN_MS;
+  $: path = `M0,${+Math.abs(height - (+firstTick.o! / +firstTick.h!) * height).toFixed(2)}L${points
+    .map((ticker) => {
+      const x =
+        +Math.abs((ticker.E! - A_DAY_IN_MS) / AN_HOUR_IN_MS / maxX).toFixed(2) *
+        (!firstTick.s ? width : 1);
+      const y = +Math.abs(height - (+ticker.a! / +ticker.h!) * height).toFixed(2);
+
+      return `${x},${y}`;
+    })
+    .join('L')}`;
+  $: area = `${path},L${width},${height}L0,${height}Z`;
+  $: percentageNegative = lastTick?.P?.includes('-');
 </script>
 
-<svg class="w-full h-full overflfow-auto relative">
+<svg
+  style="width:{width}px; height:{height}px"
+  class="max-w-full max-h-full overflfow-auto relative">
   <defs>
     <linearGradient id="gradient" x1="0%" y1="100%" x2="0%" y2="0%">
-      <stop offset="0%" stop-color="white" />
-      <stop offset="0%" stop-color="rgb(38, 226, 156, 0.15)" />
+      <stop offset="5%" stop-color="white" />
+      <stop
+        offset="90%"
+        stop-color={!lastTick.s
+          ? 'rgba(200, 200, 200, 0.05)'
+          : `${!percentageNegative ? 'rgb(38, 226, 156, 0.15)' : 'rgba(245, 89, 89, 0.15)'}`} />
     </linearGradient>
   </defs>
   <!-- data -->
   <path d={area} fill="url(#gradient)" />
-  <path class="path-line" d={path} style={`stroke: rgba(38, 226, 156);`} />
+  <path
+    class="path-line"
+    d={path}
+    style={`stroke: ${
+      !lastTick.s ? 'rgba(0, 0, 0, 0.075)' : percentageNegative ? '#F55959' : '#26E29C'
+    }`} />
 </svg>
 
 <style>
   .path-line {
-    /* fill: #26e29c33; */
     fill: none;
     stroke-linejoin: round;
     stroke-linecap: round;
-    stroke-width: 2;
-    color: rgb(38, 226, 156);
+    stroke-width: 0.125em;
   }
 </style>

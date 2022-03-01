@@ -10,7 +10,8 @@ module.exports = {
       processor: 'svelte3/svelte3',
       rules: {
         '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-unused-vars': 'warn'
+        '@typescript-eslint/no-unused-vars': 'warn',
+        '@typescript-eslint/no-non-null-assertion': 'off'
       }
     },
     // This configuration will apply only to TypeScript files
@@ -38,6 +39,8 @@ module.exports = {
         '@typescript-eslint/explicit-module-boundary-types': 'off',
 
         '@typescript-eslint/no-explicit-any': 'off',
+
+        '@typescript-eslint/no-non-null-assertion': 'off',
 
         // I suggest this setting for requiring return types on functions only where useful
         '@typescript-eslint/explicit-function-return-type': [

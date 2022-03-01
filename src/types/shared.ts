@@ -1,3 +1,8 @@
+export interface SkeletonProps extends Omit<svelteHTML.HTMLProps<HTMLElement>, 'loading'> {
+  variant?: 'grey' | 'white';
+  loading?: boolean;
+}
+
 export interface InputSelectOption {
   text: string;
   value: string | number | boolean | Record<string, any>;

@@ -1,10 +1,14 @@
 import { writable, type Writable } from 'svelte/store';
-import { BINANCE_STREAMS_WS_BASE_URL } from './constants';
-import { ADARouter } from './ada.router';
-import { BTCRouter } from './btc.router';
-import { ETHRouter } from './eth.router';
-import { type StreamMiniResponse, ExchangeSymbolsEnum, type Socket } from '../types';
 
+import { BINANCE_STREAMS_WS_BASE_URL } from './constants';
+import { ADARouter } from './ADA.router';
+import { BTCRouter } from './BTC.router';
+import { ETHRouter } from './ETH.router';
+import { ExchangeSymbolsEnum, type Socket, type StreamResponse } from '../types';
+
+export * from './ADA.router';
+export * from './BTC.router';
+export * from './ETH.router';
 export * from './constants';
 
 export let globalSocket: Socket;
@@ -21,7 +25,7 @@ export const activateSocketRouters = () => {
     }
 
     globalSocket.addEventListener('message', (event) => {
-      const { data }: StreamMiniResponse = JSON.parse(event.data);
+      const { data }: StreamResponse = JSON.parse(event.data);
 
       switch (data?.s) {
         case ExchangeSymbolsEnum.ADAUSDT:
@@ -40,7 +44,9 @@ export const activateSocketRouters = () => {
 
 export const initSocket = () => {
   //close webSocket if initially open to avoid bugs of double responses
-  closeSocket();
+  if (globalSocket?.readyState === globalSocket?.OPEN) {
+    closeSocket();
+  }
 
   if (!globalThis.WebSocket) return writable(null);
 
@@ -56,7 +62,7 @@ export const initSocket = () => {
     if (!globalSocket) return;
 
     globalSocket.addEventListener('open', () => {
-      console.log('Sockets shook hands and became friends!');
+      console.log('Sockets shook hands!');
       activateSocketRouters();
     });
     globalSocket.addEventListener('close', () => {
@@ -80,25 +86,29 @@ export const closeSocket = () => {
 
     if (globalSocket?.OPEN) {
       globalSocket.close();
+      globalSocketWritable.set(null);
     }
-
-    globalSocketWritable.set(null);
   });
 };
 
 let socketSendTimeout: any;
 
-export const socketSend = <DataType = any>(data: Partial<DataType>, subscribeOnce?: boolean) => {
+export const socketSend = <DataType = any>(
+  data: Partial<DataType>,
+  subscribeOnce?: boolean,
+  interval?: number
+) => {
   if (!globalSocket && globalSocketWritable) {
     globalSocketWritable.subscribe((instance) => {
       globalSocket = instance;
     });
   }
 
+  // retry send message (every 2s) if socket is not ready yet
   if (globalSocket?.readyState !== globalSocket?.OPEN) {
     clearTimeout(socketSendTimeout);
     socketSendTimeout = setTimeout(() => {
-      socketSend(data, subscribeOnce);
+      socketSend(data, subscribeOnce, interval);
     }, 2000);
     return;
   }
@@ -109,13 +119,20 @@ export const socketSend = <DataType = any>(data: Partial<DataType>, subscribeOnc
     if (subscribeOnce) {
       clearTimeout(socketSendTimeout);
       socketSendTimeout = setTimeout(() => {
-        globalSocket?.close();
-        globalSocketWritable.set(null);
-      }, 2000);
+        globalSocket?.send(JSON.stringify({ ...data, method: 'UNSUBSCRIBE' }));
+
+        if (interval) {
+          socketSendTimeout = setTimeout(() => {
+            socketSend(data, subscribeOnce, interval);
+          }, interval);
+        }
+      }, 1000);
     }
   } else {
     if (process.env.NODE_ENV === 'development') {
-      console.log(`Error: Could not send data: '${JSON.stringify(data)}': Sockets aren't friends.`);
+      console.log(
+        `Error: Could not send data: '${JSON.stringify(data)}': Sockets didn't shake hands.`
+      );
     }
 
     if (!subscribeOnce) initSocket();

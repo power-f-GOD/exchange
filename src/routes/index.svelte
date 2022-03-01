@@ -1,39 +1,31 @@
-<script lang="ts" context="module">
-  import { browser, dev } from '$app/env';
-
-  // we don't need any JS on this page, though we'll load
-  // it in dev so that we get hot module replacement...
-  export const hydrate = dev;
-
-  // ...but if the client-side router is already loaded
-  // (i.e. we came here from elsewhere in the app), use it
-  export const router = browser;
-
-  // since there's no dynamic data here, we can prerender
-  // it so that it gets served as a static asset in prod
-  export const prerender = true;
-</script>
-
 <script lang="ts">
   /** external deps */
   import { onMount } from 'svelte';
 
   /** internal deps */
-  import { countriesQuery } from '$lib';
-  import { initSocket, socketSend } from '../socket';
+  import { addCommasToNumber, Http } from '$lib';
+  import { initSocket, socketSend, ADATickers, BTCTickers, ETHTickers } from '../socket';
+  import { countriesQuery } from '../graphql';
   import type { Country } from '../types';
   import Text from '../components/shared/Text.svelte';
   import Input from '../components/shared/Input.svelte';
   import Stack from '../components/shared/Stack.svelte';
   import SVGIcon from '../components/shared/SVGIcon.svelte';
   import Card from '../components/shared/Card.svelte';
+  import Skeleton from '../components/shared/Skeleton.svelte';
 
   /** vars */
-  let data: any;
   let inputTimeout: any;
   let value = '';
   let isFetchingCountries = false;
+  let isGettingRate = false;
   let countriesResult: Country[] = [];
+  let exchangeRate: {
+    code: string;
+    symbol: string;
+    base?: string;
+    rates?: Record<string, number>;
+  } = { code: 'USD', symbol: '$' };
 
   /** funcs */
   const handleOnInput = (e: any) => {
@@ -54,8 +46,25 @@
     }, 500);
   };
 
+  const handleOptionSelect = (node: { code: string; symbol: string }) => async () => {
+    const { code, symbol } = node;
+
+    try {
+      isGettingRate = true;
+      exchangeRate = {
+        ...(await Http.get(`https://api.exchangerate.host/latest?base=USD&symbols=${symbol}`)),
+        symbol,
+        code
+      };
+    } catch (e) {
+      exchangeRate = exchangeRate;
+    } finally {
+      isGettingRate = false;
+    }
+  };
+
   /** react-ibles */
-  $: console.log(countriesResult);
+  $: tickers = [$ADATickers, $BTCTickers, $ETHTickers];
 
   /** lifecycles */
   onMount(() => {
@@ -66,7 +75,8 @@
           params: ['btcusdt@ticker', 'ethusdt@ticker', 'adausdt@ticker'],
           id: 1
         },
-        true
+        true,
+        process.env.NODE_ENV === 'production' ? 5000 : 10000
       );
     });
   });
@@ -85,7 +95,8 @@
     selectOptions={countriesResult.map(({ node }) => ({
       text: `${node.name} (${node.currencies.edges[0].node.code})`,
       value: node.currencies,
-      icon: node.flag
+      icon: node.flag,
+      action: handleOptionSelect(node.currencies.edges[0].node)
     }))}
     containerProps={{ class: 'w-[30em] max-w-[90vw] anim__fadeInUp anim__del--025s' }}
     bind:value
@@ -93,11 +104,28 @@
     <SVGIcon name="search" slot="start-adornment" size="1.25em" />
   </Input>
 
-  <Stack class="sm:flex-row gap-x-[1em] gap-y-[2em]">
-    <Stack as="section" class="anim__fadeInUp anim__del--05s" gap="0.75em">
-      <Card {data} />
+  <Stack class="flex-row flex-wrap px-3 justify-center gap-x-[1em] gap-y-[2em] lh-1">
+    {#each tickers as data, i}
+      <Stack
+        as="section"
+        class="anim__fadeInUp"
+        style={`animation-delay: ${(i + 1) * 0.25}s`}
+        gap="0.75em">
+        <Card {data} />
 
-      <Text as="small" class="font-bold">USD: $ 42000.479901</Text>
-    </Stack>
+        <Text as="small" class="font-bold w-full">
+          {#if data.slice(-1)[0] && !isGettingRate}
+            {exchangeRate?.code || 'USD'}: {exchangeRate?.symbol || '$'}
+            {addCommasToNumber(
+              +data.slice(-1)[0].a *
+                (exchangeRate.code === 'USD' ? 1 : (exchangeRate.rates || {})[exchangeRate.code]),
+              true
+            )}
+          {:else}
+            <Skeleton class="w-3/4" />
+          {/if}
+        </Text>
+      </Stack>
+    {/each}
   </Stack>
 </Stack>

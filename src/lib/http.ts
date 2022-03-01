@@ -8,7 +8,7 @@ export class Http {
    */
   static async get<RequestType>(
     url: string,
-    options: Omit<AxiosRequestConfig, 'url' | 'method' | 'data' | 'validateStatus'> & {
+    options?: Omit<AxiosRequestConfig, 'url' | 'method' | 'data' | 'validateStatus'> & {
       requiresAuth?: boolean;
     }
   ): Promise<RequestType> {

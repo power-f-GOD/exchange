@@ -67,6 +67,13 @@ small {
   opacity: 0.7;
 }
 
+.lh-1 {
+  &,
+  * {
+    line-height: 1em;
+  }
+}
+
 .before-or-after {
   @include before-or-after($bg: inherit, $br: inherit, $o: 0.9);
 }
