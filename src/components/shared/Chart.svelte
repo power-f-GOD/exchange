@@ -24,13 +24,17 @@
   $: computeY = (ticker: Partial<StreamResponseData>) =>
     +Math.abs(((+maxY - (+ticker.a! - +firstTick.l!)) / maxY) * height).toFixed(1);
   $: path = `M${computeX(firstTick)},${computeY(firstTick)}L${points
-    .map((ticker) => {
-      const x = computeX(ticker);
+    .map((ticker, i) => {
+      let x = computeX(ticker);
       let y = computeY(ticker);
 
       // i.e. if is sample points
       if (!firstTick.s) {
-        return `${(x / maxX) * width},${y}`;
+        x = (x / maxX) * 240;
+      }
+
+      if (i === points.length - 1) {
+        width = x;
       }
 
       return `${x},${y}`;
@@ -43,7 +47,9 @@
 </script>
 
 <Stack class="overflow-auto w-full">
-  <svg style="width:{width}px; height:{height}px" class="max-h-full overflow-visible relative">
+  <svg
+    style="width:{width}px;height:{height}px"
+    class="max-h-full overflow-visible relative max-w-ful">
     <defs>
       <linearGradient id="gradient" gradientTransform="rotate(80)">
         <stop
