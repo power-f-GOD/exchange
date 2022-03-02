@@ -49,7 +49,7 @@
   )},${height}L0,${height}Z`;
   $: percentageNegative = lastTick?.P?.includes('-');
   $: if (lastTick) {
-    if (!visContainer) {
+    if (!visContainer && lastTick.s) {
       // eslint-disable-next-line
       visContainer = globalThis.document?.querySelector(`#${lastTick.s}-vis-container`);
     }
@@ -58,8 +58,8 @@
       const { scrollLeft, scrollWidth, offsetWidth } = visContainer;
 
       // i.e. scroll auto'ly if user didn't scroll to beginning or position (24px) away from the tail end of graph in a case where the graph (path) outgrows its container
-      if (scrollWidth - (scrollLeft + offsetWidth) <= 24) {
-        visContainer.scrollLeft = scrollWidth + 24;
+      if (scrollWidth - (scrollLeft + offsetWidth) <= 32) {
+        visContainer.scrollLeft = scrollWidth + 32;
       }
     }
   }
