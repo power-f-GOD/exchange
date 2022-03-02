@@ -52,5 +52,4 @@
   </Stack>
 
   <Chart {data} />
-  <!-- <Chart /> -->
 </Stack>

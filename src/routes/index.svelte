@@ -4,7 +4,14 @@
 
   /** internal deps */
   import { addCommasToNumber, Http } from '$lib';
-  import { initSocket, socketSend, ADATickers, BTCTickers, ETHTickers } from '../socket';
+  import {
+    initSocket,
+    socketSend,
+    ADATickers,
+    BTCTickers,
+    ETHTickers,
+    globalSocket
+  } from '../socket';
   import { countriesQuery } from '../graphql';
   import type { Country } from '../types';
   import Text from '../components/shared/Text.svelte';
@@ -63,21 +70,32 @@
     }
   };
 
+  const subscribeToStream = () => {
+    socketSend(
+      {
+        method: 'SUBSCRIBE',
+        params: ['btcusdt@ticker', 'ethusdt@ticker', 'adausdt@ticker'],
+        id: 1
+      },
+      true,
+      process.env.NODE_ENV === 'production' ? 2500 : 5000
+    );
+  };
+
   /** react-ibles */
   $: tickers = [$ADATickers, $BTCTickers, $ETHTickers];
 
   /** lifecycles */
   onMount(() => {
     initSocket().subscribe(() => {
-      socketSend(
-        {
-          method: 'SUBSCRIBE',
-          params: ['btcusdt@ticker', 'ethusdt@ticker', 'adausdt@ticker'],
-          id: 1
-        },
-        true,
-        process.env.NODE_ENV === 'production' ? 2500 : 5000
-      );
+      subscribeToStream();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        if (globalSocket?.readyState === globalSocket?.CLOSED) {
+          subscribeToStream();
+        }
+      }
     });
   });
 </script>

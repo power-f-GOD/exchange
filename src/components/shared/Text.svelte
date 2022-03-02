@@ -75,10 +75,6 @@
   <address {...$$restProps} class={finalClassName} {...style}>
     <slot />
   </address>
-{:else if _as === 'div'}
-  <div {...$$restProps} class={finalClassName} {...style}>
-    <slot />
-  </div>
 {:else}
   <span {...$$restProps} class={finalClassName} {...style}>
     <slot />

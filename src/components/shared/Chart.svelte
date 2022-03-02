@@ -13,10 +13,13 @@
   export let height = 55;
   export let data: Partial<StreamResponseData>[] = [];
 
+  /** vars */
+  let visContainer: HTMLElement | null;
+
   /** react-ibles */
   $: points = data.length ? data : samplePoints;
   $: firstTick = points[0];
-  $: lastTick = points?.slice(-1)[0];
+  $: lastTick = points.slice(-1)[0];
   $: maxX = (+firstTick.C! - +firstTick.O!) / A_SEC_IN_MS;
   $: maxY = +(+firstTick.h! - +firstTick.l!).toFixed(2);
   $: computeX = (ticker: Partial<StreamResponseData>) =>
@@ -28,11 +31,12 @@
       let x = computeX(ticker);
       let y = computeY(ticker);
 
-      // i.e. if is sample points
+      // i.e. if is sample (dummy) points
       if (!firstTick.s) {
         x = (x / maxX) * 240;
       }
 
+      // reset graph width to lastTick's computed x value (for a case where it would eventually outgrow its container)
       if (i === points.length - 1) {
         width = x;
       }
@@ -44,14 +48,28 @@
     2
   )},${height}L0,${height}Z`;
   $: percentageNegative = lastTick?.P?.includes('-');
+  $: if (lastTick) {
+    if (!visContainer) {
+      visContainer = document.querySelector(`#${lastTick.s}-vis-container`);
+    }
+
+    if (visContainer) {
+      const { scrollLeft, scrollWidth, offsetWidth } = visContainer;
+
+      // i.e. scroll auto'ly if user didn't scroll to beginning or position (24px) away from the tail end of graph in a case where the graph (path) outgrows its container
+      if (scrollWidth - (scrollLeft + offsetWidth) <= 24) {
+        visContainer.scrollLeft = scrollWidth + 24;
+      }
+    }
+  }
 </script>
 
-<Stack class="overflow-auto w-full">
+<Stack class="overflow-auto w-full" id="{lastTick.s}-vis-container">
   <svg
     style="width:{width}px;height:{height}px"
     class="max-h-full overflow-visible relative max-w-ful">
     <defs>
-      <linearGradient id="gradient" gradientTransform="rotate(80)">
+      <linearGradient id={lastTick.s} gradientTransform="rotate(80)">
         <stop
           offset="0%"
           stop-color={!lastTick.s
@@ -63,7 +81,7 @@
       </linearGradient>
     </defs>
     <!-- data -->
-    <path class="area" d={area} fill="url(#gradient)" />
+    <path class="area" d={area} fill="url(#{lastTick.s})" />
     <path
       class="path-line"
       d={path}
