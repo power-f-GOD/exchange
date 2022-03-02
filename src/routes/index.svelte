@@ -127,7 +127,7 @@
       <Stack
         as="section"
         class="anim__fadeInUp"
-        style={`animation-delay: ${(i + 2) * 0.25}s`}
+        style={`animation-delay: ${((i + 3) * 0.2).toFixed(1)}s`}
         gap="0.75em">
         <Card {data} />
 

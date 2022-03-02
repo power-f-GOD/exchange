@@ -50,7 +50,8 @@
   $: percentageNegative = lastTick?.P?.includes('-');
   $: if (lastTick) {
     if (!visContainer) {
-      visContainer = document.querySelector(`#${lastTick.s}-vis-container`);
+      // eslint-disable-next-line
+      visContainer = globalThis.document?.querySelector(`#${lastTick.s}-vis-container`);
     }
 
     if (visContainer) {
